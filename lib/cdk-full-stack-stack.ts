@@ -1,16 +1,18 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { Stack, StackProps } from "aws-cdk-lib";
+import { LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { Construct } from "constructs";
+import { handlerClass } from "./cdk-full-stack-stack.my-handler";
 
-export class CdkFullStackStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export class CdkFullStackStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const fn = new NodejsFunction(this, "my-handler");
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'CdkFullStackQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const api = new RestApi(this, "api");
+
+    const hello = api.root.addResource(handlerClass.path);
+    hello.addMethod(handlerClass.method, new LambdaIntegration(fn));
   }
 }
