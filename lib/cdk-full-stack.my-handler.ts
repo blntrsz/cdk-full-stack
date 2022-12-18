@@ -1,7 +1,7 @@
-import { Handler } from "../utils";
+import { createHandler } from "../utils";
 import { z } from "zod";
 
-export const handlerClass = new Handler({
+export const handlerFunction = createHandler({
   path: "hello" as const,
   method: "POST" as const,
   input: z.object({
@@ -14,4 +14,4 @@ export const handlerClass = new Handler({
   },
 });
 
-export const handler = handlerClass.handler;
+export const handler = handlerFunction.handler;
